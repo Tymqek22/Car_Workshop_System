@@ -1,10 +1,12 @@
 ﻿using Car_Workshop_System.Domain.Entities;
+using Car_Workshop_System.Infrastructure.Auth.Identity.Models;
 using Car_Workshop_System.Infrastructure.Persistence.Configuration;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Car_Workshop_System.Infrastructure.Persistence
 {
-	public class ApplicationDbContext : DbContext
+	public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 	{
 		public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
@@ -18,6 +20,7 @@ namespace Car_Workshop_System.Infrastructure.Persistence
 			base.OnModelCreating(modelBuilder);
 
 			modelBuilder.ApplyConfiguration(new TechnicianAssignmentConfiguration());
+			modelBuilder.ApplyConfiguration(new TechnicianConfiguration());
 		}
 	}
 }
