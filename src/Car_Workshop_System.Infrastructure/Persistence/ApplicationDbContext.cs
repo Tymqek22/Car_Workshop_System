@@ -11,7 +11,6 @@ namespace Car_Workshop_System.Infrastructure.Persistence
 		public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
 		public DbSet<WorkOrder> WorkOrders { get; set; }
-		public DbSet<Technician> Technicians { get; set; }
 		public DbSet<Note> Notes { get; set; }
 		public DbSet<TechnicianAssignment> TechnicianAssignments { get; set; }
 
@@ -20,7 +19,7 @@ namespace Car_Workshop_System.Infrastructure.Persistence
 			base.OnModelCreating(modelBuilder);
 
 			modelBuilder.ApplyConfiguration(new TechnicianAssignmentConfiguration());
-			modelBuilder.ApplyConfiguration(new TechnicianConfiguration());
+			modelBuilder.ApplyConfiguration(new NoteConfiguration());
 		}
 	}
 }

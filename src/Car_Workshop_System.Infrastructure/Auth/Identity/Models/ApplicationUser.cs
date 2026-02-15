@@ -7,8 +7,9 @@ namespace Car_Workshop_System.Infrastructure.Auth.Identity.Models
 	{
 		public string FirstName { get; set; }
 		public string LastName { get; set; }
-		public string? Phone { get; set; }
+		public string? Specialization { get; set; }
 
-		public Technician Technician { get; set; }
+		public ICollection<Note>? Notes { get; set; }
+		public ICollection<TechnicianAssignment>? TechnicianAssignments { get; set; }
 	}
 }

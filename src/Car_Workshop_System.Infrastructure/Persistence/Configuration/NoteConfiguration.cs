@@ -1,21 +1,21 @@
 ﻿using Car_Workshop_System.Domain.Entities;
 using Car_Workshop_System.Infrastructure.Auth.Identity.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Car_Workshop_System.Infrastructure.Persistence.Configuration
 {
-	public class TechnicianConfiguration : IEntityTypeConfiguration<Technician>
+	public class NoteConfiguration : IEntityTypeConfiguration<Note>
 	{
-		public void Configure(EntityTypeBuilder<Technician> builder)
+		public void Configure(EntityTypeBuilder<Note> builder)
 		{
-			builder.HasKey(t => t.Id);
+			builder.HasKey(n => n.Id);
 
 			builder
 				.HasOne<ApplicationUser>()
-				.WithOne(u => u.Technician)
-				.HasForeignKey<Technician>(t => t.UserId)
-				.HasPrincipalKey<ApplicationUser>(u => u.Id);
+				.WithMany(u => u.Notes)
+				.HasForeignKey(n => n.TechnicianId);
 		}
 	}
 }

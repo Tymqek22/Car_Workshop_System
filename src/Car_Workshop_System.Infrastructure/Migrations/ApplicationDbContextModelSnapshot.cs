@@ -31,8 +31,9 @@ namespace Car_Workshop_System.Infrastructure.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("TechnicianId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("TechnicianId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Text")
                         .HasColumnType("nvarchar(max)");
@@ -49,31 +50,10 @@ namespace Car_Workshop_System.Infrastructure.Migrations
                     b.ToTable("Notes");
                 });
 
-            modelBuilder.Entity("Car_Workshop_System.Domain.Entities.Technician", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Specialization")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("Technicians");
-                });
-
             modelBuilder.Entity("Car_Workshop_System.Domain.Entities.TechnicianAssignment", b =>
                 {
-                    b.Property<Guid>("TechnicianId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("TechnicianId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<Guid>("WorkOrderId")
                         .HasColumnType("uniqueidentifier");
@@ -159,9 +139,6 @@ namespace Car_Workshop_System.Infrastructure.Migrations
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Phone")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
@@ -169,6 +146,9 @@ namespace Car_Workshop_System.Infrastructure.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Specialization")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("TwoFactorEnabled")
@@ -326,31 +306,22 @@ namespace Car_Workshop_System.Infrastructure.Migrations
 
             modelBuilder.Entity("Car_Workshop_System.Domain.Entities.Note", b =>
                 {
-                    b.HasOne("Car_Workshop_System.Domain.Entities.Technician", "Technician")
+                    b.HasOne("Car_Workshop_System.Infrastructure.Auth.Identity.Models.ApplicationUser", null)
                         .WithMany("Notes")
-                        .HasForeignKey("TechnicianId");
+                        .HasForeignKey("TechnicianId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Car_Workshop_System.Domain.Entities.WorkOrder", "WorkOrder")
                         .WithMany("Notes")
                         .HasForeignKey("WorkOrderId");
 
-                    b.Navigation("Technician");
-
                     b.Navigation("WorkOrder");
-                });
-
-            modelBuilder.Entity("Car_Workshop_System.Domain.Entities.Technician", b =>
-                {
-                    b.HasOne("Car_Workshop_System.Infrastructure.Auth.Identity.Models.ApplicationUser", null)
-                        .WithOne("Technician")
-                        .HasForeignKey("Car_Workshop_System.Domain.Entities.Technician", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Car_Workshop_System.Domain.Entities.TechnicianAssignment", b =>
                 {
-                    b.HasOne("Car_Workshop_System.Domain.Entities.Technician", "Technician")
+                    b.HasOne("Car_Workshop_System.Infrastructure.Auth.Identity.Models.ApplicationUser", null)
                         .WithMany("TechnicianAssignments")
                         .HasForeignKey("TechnicianId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -361,8 +332,6 @@ namespace Car_Workshop_System.Infrastructure.Migrations
                         .HasForeignKey("WorkOrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Technician");
 
                     b.Navigation("WorkOrder");
                 });
@@ -418,13 +387,6 @@ namespace Car_Workshop_System.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Car_Workshop_System.Domain.Entities.Technician", b =>
-                {
-                    b.Navigation("Notes");
-
-                    b.Navigation("TechnicianAssignments");
-                });
-
             modelBuilder.Entity("Car_Workshop_System.Domain.Entities.WorkOrder", b =>
                 {
                     b.Navigation("Notes");
@@ -434,8 +396,9 @@ namespace Car_Workshop_System.Infrastructure.Migrations
 
             modelBuilder.Entity("Car_Workshop_System.Infrastructure.Auth.Identity.Models.ApplicationUser", b =>
                 {
-                    b.Navigation("Technician")
-                        .IsRequired();
+                    b.Navigation("Notes");
+
+                    b.Navigation("TechnicianAssignments");
                 });
 #pragma warning restore 612, 618
         }

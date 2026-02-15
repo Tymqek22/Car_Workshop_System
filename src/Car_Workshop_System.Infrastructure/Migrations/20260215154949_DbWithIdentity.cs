@@ -32,7 +32,7 @@ namespace Car_Workshop_System.Infrastructure.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Specialization = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -177,25 +177,6 @@ namespace Car_Workshop_System.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Technicians",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Specialization = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Technicians", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Technicians_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Notes",
                 columns: table => new
                 {
@@ -203,16 +184,17 @@ namespace Car_Workshop_System.Infrastructure.Migrations
                     Text = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     WorkOrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    TechnicianId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    TechnicianId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Notes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Notes_Technicians_TechnicianId",
+                        name: "FK_Notes_AspNetUsers_TechnicianId",
                         column: x => x.TechnicianId,
-                        principalTable: "Technicians",
-                        principalColumn: "Id");
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Notes_WorkOrders_WorkOrderId",
                         column: x => x.WorkOrderId,
@@ -225,15 +207,15 @@ namespace Car_Workshop_System.Infrastructure.Migrations
                 columns: table => new
                 {
                     WorkOrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TechnicianId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    TechnicianId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TechnicianAssignments", x => new { x.TechnicianId, x.WorkOrderId });
                     table.ForeignKey(
-                        name: "FK_TechnicianAssignments_Technicians_TechnicianId",
+                        name: "FK_TechnicianAssignments_AspNetUsers_TechnicianId",
                         column: x => x.TechnicianId,
-                        principalTable: "Technicians",
+                        principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -297,12 +279,6 @@ namespace Car_Workshop_System.Infrastructure.Migrations
                 name: "IX_TechnicianAssignments_WorkOrderId",
                 table: "TechnicianAssignments",
                 column: "WorkOrderId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Technicians_UserId",
-                table: "Technicians",
-                column: "UserId",
-                unique: true);
         }
 
         /// <inheritdoc />
@@ -333,13 +309,10 @@ namespace Car_Workshop_System.Infrastructure.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Technicians");
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "WorkOrders");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUsers");
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Car_Workshop_System.Domain.Entities;
+using Car_Workshop_System.Infrastructure.Auth.Identity.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -16,8 +17,8 @@ namespace Car_Workshop_System.Infrastructure.Persistence.Configuration
 				.HasForeignKey(ta => ta.WorkOrderId);
 
 			builder
-				.HasOne(ta => ta.Technician)
-				.WithMany(t => t.TechnicianAssignments)
+				.HasOne<ApplicationUser>()
+				.WithMany(u => u.TechnicianAssignments)
 				.HasForeignKey(ta => ta.TechnicianId);
 
 			builder.ToTable("TechnicianAssignments");
