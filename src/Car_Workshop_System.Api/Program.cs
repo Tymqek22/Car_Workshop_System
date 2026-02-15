@@ -1,4 +1,6 @@
+using Car_Workshop_System.Infrastructure.Auth.Identity.DbInitializer;
 using Car_Workshop_System.Infrastructure.Auth.Identity.Models;
+using Car_Workshop_System.Infrastructure.Auth.Services;
 using Car_Workshop_System.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -43,17 +45,24 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddScoped<JwtService>();
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+using (var scope = app.Services.CreateScope()) 
 {
-    app.MapOpenApi();
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint("/openapi/v1.json","api");
-    });
+    var services = scope.ServiceProvider;
+    await DbInitializer.InitializeDb(services);
 }
+
+    // Configure the HTTP request pipeline.
+    if (app.Environment.IsDevelopment()) {
+        app.MapOpenApi();
+        app.UseSwaggerUI(options =>
+        {
+            options.SwaggerEndpoint("/openapi/v1.json","api");
+        });
+    }
 
 app.UseHttpsRedirection();
 
