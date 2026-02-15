@@ -10,6 +10,7 @@ namespace Car_Workshop_System.Api.Controllers
 	[ApiController]
 	public class AuthController : ControllerBase
 	{
+		//to refactor leater
 		private readonly UserManager<ApplicationUser> _userManager;
 		private readonly JwtService _jwtService;
 
