@@ -26,7 +26,7 @@ namespace Car_Workshop_System.Infrastructure.Repository
 			_dbSet.Remove(entity);
 		}
 
-		public async Task<T> GetByIdAsync(int id)
+		public async Task<T> GetByIdAsync(object id)
 		{
 			return await _dbSet.FindAsync(id);
 		}

@@ -6,6 +6,8 @@ namespace Car_Workshop_System.Application.Services
 {
 	public class WorkOrderService : IWorkOrderService
 	{
+		//TODO: refactor to use dto as a parameters, rich domain model implementation, result pattern
+
 		private readonly IRepository<WorkOrder> _workOrderRepository;
 		private readonly IRepository<TechnicianAssignment> _technicianAssignmentRepository;
 		private readonly IIdentityService _identityService;
@@ -40,8 +42,13 @@ namespace Car_Workshop_System.Application.Services
 			await _workOrderRepository.SaveChangesAsync();
 		}
 
-		public async Task AssignTechnician(WorkOrder workOrder,string technicianId)
+		public async Task AssignTechnician(Guid workOrderId,string technicianId)
 		{
+			var workOrder = await _workOrderRepository.GetByIdAsync(workOrderId);
+
+			if (workOrder is null)
+				throw new Exception("Work order doesn't exists.");
+
 			if (await _identityService.GetUserById(technicianId) is null)
 				throw new Exception("Technician doesn't exists.");
 
@@ -55,8 +62,13 @@ namespace Car_Workshop_System.Application.Services
 			await _technicianAssignmentRepository.SaveChangesAsync();
 		}
 
-		public async Task CancelWorkOrder(WorkOrder workOrder)
+		public async Task CancelWorkOrder(Guid workOrderId)
 		{
+			var workOrder = await _workOrderRepository.GetByIdAsync(workOrderId);
+
+			if (workOrder is null)
+				throw new Exception("Work order doesn't exists.");
+
 			if (workOrder.Status == Status.Cancelled)
 				throw new Exception("Work order is already cancelled.");
 

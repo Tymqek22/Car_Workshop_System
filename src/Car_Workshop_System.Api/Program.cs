@@ -1,7 +1,11 @@
+using Car_Workshop_System.Application.Interfaces;
+using Car_Workshop_System.Application.Services;
+using Car_Workshop_System.Domain.Entities;
 using Car_Workshop_System.Infrastructure.Auth.Identity.DbInitializer;
 using Car_Workshop_System.Infrastructure.Auth.Identity.Models;
 using Car_Workshop_System.Infrastructure.Auth.Services;
 using Car_Workshop_System.Infrastructure.Persistence;
+using Car_Workshop_System.Infrastructure.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -46,6 +50,11 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddScoped<JwtService>();
+builder.Services.AddScoped<IIdentityService,IdentityService>();
+builder.Services.AddScoped<IRepository<WorkOrder>,Repository<WorkOrder>>();
+builder.Services.AddScoped<IRepository<TechnicianAssignment>,Repository<TechnicianAssignment>>();
+builder.Services.AddScoped<IRepository<Note>,Repository<Note>>();
+builder.Services.AddScoped<IWorkOrderService,WorkOrderService>();
 
 var app = builder.Build();
 
