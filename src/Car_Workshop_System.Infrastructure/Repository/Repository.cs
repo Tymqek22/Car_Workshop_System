@@ -1,6 +1,7 @@
 ﻿using Car_Workshop_System.Application.Interfaces;
 using Car_Workshop_System.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Car_Workshop_System.Infrastructure.Repository
 {
@@ -26,14 +27,17 @@ namespace Car_Workshop_System.Infrastructure.Repository
 			_dbSet.Remove(entity);
 		}
 
-		public async Task<IEnumerable<T>> Get(Func<T,bool> predicate = null,string includeProperties = "")
+		public async Task<IEnumerable<T>> Get(
+			Expression<Func<T,bool>> predicate = null,
+			string includeProperties = "")
 		{
-			var query = _dbSet.Where(predicate).AsQueryable();
+			IQueryable<T> query = _dbSet;
 
+			if (predicate != null)
+				query = query.Where(predicate);
 
 			foreach (var includeProperty in includeProperties.Split(
-				new char[] {','}, StringSplitOptions.RemoveEmptyEntries)) {
-
+				new char[] { ',' },StringSplitOptions.RemoveEmptyEntries)) {
 				query = query.Include(includeProperty);
 			}
 

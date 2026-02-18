@@ -55,6 +55,7 @@ builder.Services.AddScoped<IRepository<WorkOrder>,Repository<WorkOrder>>();
 builder.Services.AddScoped<IRepository<TechnicianAssignment>,Repository<TechnicianAssignment>>();
 builder.Services.AddScoped<IRepository<Note>,Repository<Note>>();
 builder.Services.AddScoped<IWorkOrderService,WorkOrderService>();
+builder.Services.AddScoped<ITechnicianService,TechnicianService>();
 
 var app = builder.Build();
 

@@ -43,17 +43,17 @@ namespace Car_Workshop_System.Application.Services
 			await _workOrderRepository.SaveChangesAsync();
 		}
 
-		public async Task ChangeStatus(Guid workOrderId,Status status)
+		public async Task ChangeStatus(Guid workOrderId,int status)
 		{
 			var workOrder = await _workOrderRepository.GetByIdAsync(workOrderId);
 
 			if (workOrder is null)
 				throw new Exception("Work order doesn't exist.");
 
-			if (workOrder.Status == Status.Cancelled || (status - workOrder.Status != 1))
+			if (workOrder.Status == Status.Cancelled || ((Status)status - workOrder.Status != 1))
 				throw new Exception("Status cannot be changed. Try to pick different status.");
 
-			workOrder.Status = status;
+			workOrder.Status = (Status)status;
 
 			await _workOrderRepository.SaveChangesAsync();
 		}
