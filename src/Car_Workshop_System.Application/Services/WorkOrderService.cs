@@ -1,4 +1,5 @@
-﻿using Car_Workshop_System.Application.Interfaces;
+﻿using Car_Workshop_System.Application.DTO;
+using Car_Workshop_System.Application.Interfaces;
 using Car_Workshop_System.Domain.Entities;
 using Car_Workshop_System.Domain.Enums;
 
@@ -22,40 +23,36 @@ namespace Car_Workshop_System.Application.Services
 			_identityService = identityService;
 		}
 
-		public async Task AcceptWorkOrder(
-			string brand,
-			int year,
-			string? model = null,
-			string? issueDestription = null)
+		public async Task AcceptWorkOrder(AcceptWorkOrderRequest request)
 		{
 			var workOrder = new WorkOrder
 			{
-				Brand = brand,
-				Model = model,
-				Year = year,
-				IssueDescription = issueDestription,
+				Brand = request.Brand,
+				Model = request.Model,
+				Year = request.Year,
+				IssueDescription = request.IssueDescription,
 				CreatedAt = DateTime.Now,
-				Status = Domain.Enums.Status.Created
+				Status = Status.Created
 			};
 
 			await _workOrderRepository.AddAsync(workOrder);
 			await _workOrderRepository.SaveChangesAsync();
 		}
 
-		public async Task AssignTechnician(Guid workOrderId,string technicianId)
+		public async Task AssignTechnician(AssignTechnicianRequest request)
 		{
-			var workOrder = await _workOrderRepository.GetByIdAsync(workOrderId);
+			var workOrder = await _workOrderRepository.GetByIdAsync(request.WorkOrderId);
 
 			if (workOrder is null)
 				throw new Exception("Work order doesn't exists.");
 
-			if (await _identityService.GetUserById(technicianId) is null)
+			if (await _identityService.GetUserById(request.TechnicianId) is null)
 				throw new Exception("Technician doesn't exists.");
 
 			var technicianAssignment = new TechnicianAssignment
 			{
 				WorkOrderId = workOrder.Id,
-				TechnicianId = technicianId
+				TechnicianId = request.TechnicianId
 			};
 
 			await _technicianAssignmentRepository.AddAsync(technicianAssignment);

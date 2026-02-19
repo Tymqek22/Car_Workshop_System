@@ -1,11 +1,12 @@
-﻿using Car_Workshop_System.Domain.Entities;
+﻿using Car_Workshop_System.Application.DTO;
+using Car_Workshop_System.Domain.Entities;
 
 namespace Car_Workshop_System.Application.Interfaces
 {
 	public interface IWorkOrderService
 	{
-		public Task AcceptWorkOrder(string brand,int year, string? model = null, string? issueDestription = null);
+		public Task AcceptWorkOrder(AcceptWorkOrderRequest request);
 		public Task CancelWorkOrder(Guid workOrderId);
-		public Task AssignTechnician(Guid workOrderId,string technicianId);
+		public Task AssignTechnician(AssignTechnicianRequest request);
 	}
 }

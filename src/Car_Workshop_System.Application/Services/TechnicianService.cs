@@ -1,4 +1,5 @@
-﻿using Car_Workshop_System.Application.Interfaces;
+﻿using Car_Workshop_System.Application.DTO;
+using Car_Workshop_System.Application.Interfaces;
 using Car_Workshop_System.Domain.Entities;
 using Car_Workshop_System.Domain.Enums;
 
@@ -18,22 +19,22 @@ namespace Car_Workshop_System.Application.Services
 			_identityService = identityService;
 		}
 
-		public async Task AddNote(Guid workOrderId,string text,string technicianId)
+		public async Task AddNote(AddNoteRequest request)
 		{
-			var workOrder = await _workOrderRepository.Get(wo => wo.Id == workOrderId,"Notes");
+			var workOrder = await _workOrderRepository.Get(wo => wo.Id == request.WorkOrderId,"Notes");
 
 			if (workOrder is null)
 				throw new Exception("Work order doesn't exist.");
 
-			if (await _identityService.GetUserById(technicianId) is null)
+			if (await _identityService.GetUserById(request.TechnicianId) is null)
 				throw new Exception("Technician doesn't exist.");
 
 			var note = new Note
 			{
-				Text = text,
+				Text = request.Text,
 				Date = DateTime.Now,
-				WorkOrderId = workOrderId,
-				TechnicianId = technicianId
+				WorkOrderId = request.WorkOrderId,
+				TechnicianId = request.TechnicianId
 			};
 
 			workOrder.First().Notes.Add(note);
@@ -41,17 +42,17 @@ namespace Car_Workshop_System.Application.Services
 			await _workOrderRepository.SaveChangesAsync();
 		}
 
-		public async Task ChangeStatus(Guid workOrderId,int status)
+		public async Task ChangeStatus(ChangeStatusRequest request)
 		{
-			var workOrder = await _workOrderRepository.GetByIdAsync(workOrderId);
+			var workOrder = await _workOrderRepository.GetByIdAsync(request.WorkOrderId);
 
 			if (workOrder is null)
 				throw new Exception("Work order doesn't exist.");
 
-			if (workOrder.Status == Status.Cancelled || ((Status)status - workOrder.Status != 1))
+			if (workOrder.Status == Status.Cancelled || ((Status)request.Status - workOrder.Status != 1))
 				throw new Exception("Status cannot be changed. Try to pick different status.");
 
-			workOrder.Status = (Status)status;
+			workOrder.Status = (Status)request.Status;
 
 			await _workOrderRepository.SaveChangesAsync();
 		}
