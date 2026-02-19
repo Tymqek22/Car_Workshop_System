@@ -7,7 +7,6 @@ namespace Car_Workshop_System.Application.Services
 	public class TechnicianService : ITechnicianService
 	{
 		private readonly IRepository<WorkOrder> _workOrderRepository;
-		private readonly IRepository<Note> _noteRepository;
 		private readonly IIdentityService _identityService;
 
 		public TechnicianService(
@@ -16,7 +15,6 @@ namespace Car_Workshop_System.Application.Services
 			IIdentityService identityService)
 		{
 			_workOrderRepository = workOrderRepository;
-			_noteRepository = noteRepository;
 			_identityService = identityService;
 		}
 
