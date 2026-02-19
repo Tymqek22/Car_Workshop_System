@@ -5,8 +5,8 @@ namespace Car_Workshop_System.Application.Interfaces
 {
 	public interface IWorkOrderService
 	{
-		public Task AcceptWorkOrder(AcceptWorkOrderRequest request);
+		public Task AcceptWorkOrder(AcceptWorkOrderDto request);
 		public Task CancelWorkOrder(Guid workOrderId);
-		public Task AssignTechnician(AssignTechnicianRequest request);
+		public Task AssignTechnician(AssignTechnicianDto request);
 	}
 }

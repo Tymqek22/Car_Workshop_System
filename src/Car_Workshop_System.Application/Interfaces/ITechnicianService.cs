@@ -5,7 +5,7 @@ namespace Car_Workshop_System.Application.Interfaces
 {
 	public interface ITechnicianService
 	{
-		public Task ChangeStatus(ChangeStatusRequest request);
-		public Task AddNote(AddNoteRequest request);
+		public Task ChangeStatus(ChangeStatusDto request);
+		public Task AddNote(AddNoteDto request);
 	}
 }

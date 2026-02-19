@@ -23,7 +23,7 @@ namespace Car_Workshop_System.Application.Services
 			_identityService = identityService;
 		}
 
-		public async Task AcceptWorkOrder(AcceptWorkOrderRequest request)
+		public async Task AcceptWorkOrder(AcceptWorkOrderDto request)
 		{
 			var workOrder = new WorkOrder
 			{
@@ -39,7 +39,7 @@ namespace Car_Workshop_System.Application.Services
 			await _workOrderRepository.SaveChangesAsync();
 		}
 
-		public async Task AssignTechnician(AssignTechnicianRequest request)
+		public async Task AssignTechnician(AssignTechnicianDto request)
 		{
 			var workOrder = await _workOrderRepository.GetByIdAsync(request.WorkOrderId);
 

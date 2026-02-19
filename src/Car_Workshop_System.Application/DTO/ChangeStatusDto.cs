@@ -1,6 +1,6 @@
 ﻿namespace Car_Workshop_System.Application.DTO
 {
-	public class ChangeStatusRequest
+	public class ChangeStatusDto
 	{
 		public Guid WorkOrderId { get; set; }
 		public int Status { get; set; }

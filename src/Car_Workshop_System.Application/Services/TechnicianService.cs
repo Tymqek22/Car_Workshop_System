@@ -19,7 +19,7 @@ namespace Car_Workshop_System.Application.Services
 			_identityService = identityService;
 		}
 
-		public async Task AddNote(AddNoteRequest request)
+		public async Task AddNote(AddNoteDto request)
 		{
 			var workOrder = await _workOrderRepository.Get(wo => wo.Id == request.WorkOrderId,"Notes");
 
@@ -42,7 +42,7 @@ namespace Car_Workshop_System.Application.Services
 			await _workOrderRepository.SaveChangesAsync();
 		}
 
-		public async Task ChangeStatus(ChangeStatusRequest request)
+		public async Task ChangeStatus(ChangeStatusDto request)
 		{
 			var workOrder = await _workOrderRepository.GetByIdAsync(request.WorkOrderId);
 

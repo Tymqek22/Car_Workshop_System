@@ -1,4 +1,6 @@
-﻿using Car_Workshop_System.Application.Interfaces;
+﻿using Car_Workshop_System.Api.Requests;
+using Car_Workshop_System.Application.DTO;
+using Car_Workshop_System.Application.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,14 +23,10 @@ namespace Car_Workshop_System.Api.Controllers
 			_technicianService = technicianService;
 		}
 
-		[HttpPost("workorders")]
-		public async Task<IActionResult> Accept(
-			string brand,
-			int year,
-			string? model = null,
-			string? issueDescription = null)
+		[HttpPost]
+		public async Task<IActionResult> Accept([FromBody] AcceptWorkOrderDto request)
 		{
-			await _workOrderService.AcceptWorkOrder(brand,year,model,issueDescription);
+			await _workOrderService.AcceptWorkOrder(request);
 
 			return Ok("Work order accepted");
 		}
@@ -42,25 +40,47 @@ namespace Car_Workshop_System.Api.Controllers
 		}
 
 		[HttpPost("{workOrderId}/technicians")]
-		public async Task<IActionResult> AssignTechnician(Guid workOrderId,string technicianId)
+		public async Task<IActionResult> AssignTechnician(Guid workOrderId,
+			[FromBody] AssignTechnicianRequest request)
 		{
-			await _workOrderService.AssignTechnician(workOrderId,technicianId);
+			var dto = new AssignTechnicianDto
+			{
+				WorkOrderId = workOrderId,
+				TechnicianId = request.TechnicianId
+			};
+
+			await _workOrderService.AssignTechnician(dto);
 
 			return Ok("Technician assigned succesfully.");
 		}
 
 		[HttpPost("{workOrderId}/notes")]
-		public async Task<IActionResult> AddNote(Guid workOrderId,string text,string technicianId)
+		public async Task<IActionResult> AddNote(Guid workOrderId,
+			[FromBody] AddNoteRequest request)
 		{
-			await _technicianService.AddNote(workOrderId,text,technicianId);
+			var dto = new AddNoteDto
+			{
+				WorkOrderId = workOrderId,
+				Text = request.Text,
+				TechnicianId = request.TechnicianId
+			};
+
+			await _technicianService.AddNote(dto);
 
 			return Ok("Note added successfully.");
 		}
 
 		[HttpPatch("{workOrderId}/status")]
-		public async Task<IActionResult> ChangeStatus(Guid workOrderId,int status)
+		public async Task<IActionResult> ChangeStatus(Guid workOrderId,
+			[FromBody] ChangeStatusRequest request)
 		{
-			await _technicianService.ChangeStatus(workOrderId,status);
+			var dto = new ChangeStatusDto
+			{
+				WorkOrderId = workOrderId,
+				Status = request.Status
+			};
+
+			await _technicianService.ChangeStatus(dto);
 
 			return Ok("Status changed successfully.");
 		}

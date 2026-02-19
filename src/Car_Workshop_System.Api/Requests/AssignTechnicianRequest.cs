@@ -1,8 +1,7 @@
-﻿namespace Car_Workshop_System.Application.DTO
+﻿namespace Car_Workshop_System.Api.Requests
 {
 	public class AssignTechnicianRequest
 	{
-		public Guid WorkOrderId { get; set; }
 		public string TechnicianId { get; set; }
 	}
 }

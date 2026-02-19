@@ -1,6 +1,6 @@
 ﻿namespace Car_Workshop_System.Application.DTO
 {
-	public class AcceptWorkOrderRequest
+	public class AcceptWorkOrderDto
 	{
 		public string Brand { get; set; }
 		public int Year { get; set; }
