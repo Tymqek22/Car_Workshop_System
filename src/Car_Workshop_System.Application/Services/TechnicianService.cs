@@ -1,5 +1,6 @@
 ﻿using Car_Workshop_System.Application.DTO;
 using Car_Workshop_System.Application.Interfaces;
+using Car_Workshop_System.Application.Mappings;
 using Car_Workshop_System.Domain.Entities;
 using Car_Workshop_System.Domain.Enums;
 
@@ -7,12 +8,11 @@ namespace Car_Workshop_System.Application.Services
 {
 	public class TechnicianService : ITechnicianService
 	{
-		private readonly IRepository<WorkOrder> _workOrderRepository;
+		private readonly IWorkOrderRepository _workOrderRepository;
 		private readonly IIdentityService _identityService;
 
 		public TechnicianService(
-			IRepository<WorkOrder> workOrderRepository,
-			IRepository<Note> noteRepository,
+			IWorkOrderRepository workOrderRepository,
 			IIdentityService identityService)
 		{
 			_workOrderRepository = workOrderRepository;
@@ -55,6 +55,16 @@ namespace Car_Workshop_System.Application.Services
 			workOrder.Status = (Status)request.Status;
 
 			await _workOrderRepository.SaveChangesAsync();
+		}
+
+		public async Task<IEnumerable<WorkOrderDto>> GetAllTechniciansWorkOrders(string technicianId)
+		{
+			var techniciansOrders = await _workOrderRepository.GetAllTechnicianWorkOrders(technicianId);
+
+			if (techniciansOrders is null)
+				throw new Exception("None work orders found.");
+
+			return techniciansOrders.Select(to => to.MapToDto());
 		}
 	}
 }

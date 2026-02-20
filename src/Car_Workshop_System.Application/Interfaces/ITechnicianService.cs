@@ -7,5 +7,6 @@ namespace Car_Workshop_System.Application.Interfaces
 	{
 		public Task ChangeStatus(ChangeStatusDto request);
 		public Task AddNote(AddNoteDto request);
+		public Task<IEnumerable<WorkOrderDto>> GetAllTechniciansWorkOrders(string technicianId);
 	}
 }

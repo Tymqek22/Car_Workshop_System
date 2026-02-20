@@ -1,5 +1,6 @@
 ﻿using Car_Workshop_System.Application.DTO;
 using Car_Workshop_System.Application.Interfaces;
+using Car_Workshop_System.Application.Mappings;
 using Car_Workshop_System.Domain.Entities;
 using Car_Workshop_System.Domain.Enums;
 
@@ -73,6 +74,23 @@ namespace Car_Workshop_System.Application.Services
 
 			await _workOrderRepository.UpdateAsync(workOrder);
 			await _workOrderRepository.SaveChangesAsync();
+		}
+
+		public async Task<IEnumerable<WorkOrderDto>> GetAllWorkOrders()
+		{
+			var workOrders = await _workOrderRepository.Get(null,"");
+
+			return workOrders.Select(wo => wo.MapToDto());
+		}
+
+		public async Task<WorkOrderDto> GetWorkOrderDetails(Guid workOrderId)
+		{
+			var workOrder = await _workOrderRepository.GetByIdAsync(workOrderId);
+
+			if (workOrder is null)
+				throw new Exception("Work order doesn't exist.");
+
+			return workOrder.MapToDto();
 		}
 	}
 }
