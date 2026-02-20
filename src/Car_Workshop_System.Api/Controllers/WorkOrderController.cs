@@ -23,6 +23,30 @@ namespace Car_Workshop_System.Api.Controllers
 			_technicianService = technicianService;
 		}
 
+		[HttpGet]
+		public async Task<IActionResult> GetAllWorkOrders()
+		{
+			var workOrders = await _workOrderService.GetAllWorkOrders();
+
+			return Ok(workOrders);
+		}
+
+		[HttpGet("{workOrderId}")]
+		public async Task<IActionResult> GetWorkOrderDetails(Guid workOrderId)
+		{
+			var workOrder = await _workOrderService.GetWorkOrderDetails(workOrderId);
+
+			return Ok(workOrder);
+		}
+
+		[HttpGet("technicians/{technicianId}")]
+		public async Task<IActionResult> GetAllTechnicianWorkOrders(string technicianId)
+		{
+			var workOrders = await _technicianService.GetAllTechniciansWorkOrders(technicianId);
+
+			return Ok(workOrders);
+		}
+
 		[HttpPost]
 		public async Task<IActionResult> Accept([FromBody] AcceptWorkOrderDto request)
 		{

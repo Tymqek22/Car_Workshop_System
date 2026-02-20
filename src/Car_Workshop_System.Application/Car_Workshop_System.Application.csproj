@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Mappings\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Car_Workshop_System.Domain\Car_Workshop_System.Domain.csproj" />
   </ItemGroup>
 
