@@ -4,6 +4,7 @@ using Car_Workshop_System.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Car_Workshop_System.Api.Controllers
 {
@@ -33,7 +34,7 @@ namespace Car_Workshop_System.Api.Controllers
 			return Ok(workOrders);
 		}
 
-		[Authorize(Roles = "Owner")]
+		[Authorize(Roles = "Owner, Technician")]
 		[HttpGet("{workOrderId}")]
 		public async Task<IActionResult> GetWorkOrderDetails(Guid workOrderId)
 		{
@@ -69,7 +70,7 @@ namespace Car_Workshop_System.Api.Controllers
 			return Ok("Work order cancelled successfully.");
 		}
 
-		[Authorize(Roles = "Technician")]
+		[Authorize(Roles = "Owner")]
 		[HttpPost("{workOrderId}/technicians")]
 		public async Task<IActionResult> AssignTechnician(Guid workOrderId,
 			[FromBody] AssignTechnicianRequest request)
@@ -90,11 +91,13 @@ namespace Car_Workshop_System.Api.Controllers
 		public async Task<IActionResult> AddNote(Guid workOrderId,
 			[FromBody] AddNoteRequest request)
 		{
+			var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
 			var dto = new AddNoteDto
 			{
 				WorkOrderId = workOrderId,
 				Text = request.Text,
-				TechnicianId = request.TechnicianId
+				TechnicianId = userId
 			};
 
 			await _technicianService.AddNote(dto);
