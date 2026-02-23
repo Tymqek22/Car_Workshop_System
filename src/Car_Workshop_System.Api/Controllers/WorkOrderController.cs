@@ -1,6 +1,7 @@
 ﻿using Car_Workshop_System.Api.Requests;
 using Car_Workshop_System.Application.DTO;
 using Car_Workshop_System.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,6 +24,7 @@ namespace Car_Workshop_System.Api.Controllers
 			_technicianService = technicianService;
 		}
 
+		[Authorize(Roles = "Owner")]
 		[HttpGet]
 		public async Task<IActionResult> GetAllWorkOrders()
 		{
@@ -31,6 +33,7 @@ namespace Car_Workshop_System.Api.Controllers
 			return Ok(workOrders);
 		}
 
+		[Authorize(Roles = "Owner")]
 		[HttpGet("{workOrderId}")]
 		public async Task<IActionResult> GetWorkOrderDetails(Guid workOrderId)
 		{
@@ -39,6 +42,7 @@ namespace Car_Workshop_System.Api.Controllers
 			return Ok(workOrder);
 		}
 
+		[Authorize(Roles = "Technician")]
 		[HttpGet("technicians/{technicianId}")]
 		public async Task<IActionResult> GetAllTechnicianWorkOrders(string technicianId)
 		{
@@ -47,6 +51,7 @@ namespace Car_Workshop_System.Api.Controllers
 			return Ok(workOrders);
 		}
 
+		[Authorize(Roles = "Owner")]
 		[HttpPost]
 		public async Task<IActionResult> Accept([FromBody] AcceptWorkOrderDto request)
 		{
@@ -55,6 +60,7 @@ namespace Car_Workshop_System.Api.Controllers
 			return Ok("Work order accepted");
 		}
 
+		[Authorize(Roles = "Owner")]
 		[HttpPatch("{workOrderId}/cancellation")]
 		public async Task<IActionResult> Cancel(Guid workOrderId)
 		{
@@ -63,6 +69,7 @@ namespace Car_Workshop_System.Api.Controllers
 			return Ok("Work order cancelled successfully.");
 		}
 
+		[Authorize(Roles = "Technician")]
 		[HttpPost("{workOrderId}/technicians")]
 		public async Task<IActionResult> AssignTechnician(Guid workOrderId,
 			[FromBody] AssignTechnicianRequest request)
@@ -78,6 +85,7 @@ namespace Car_Workshop_System.Api.Controllers
 			return Ok("Technician assigned succesfully.");
 		}
 
+		[Authorize(Roles = "Technician")]
 		[HttpPost("{workOrderId}/notes")]
 		public async Task<IActionResult> AddNote(Guid workOrderId,
 			[FromBody] AddNoteRequest request)
@@ -94,6 +102,7 @@ namespace Car_Workshop_System.Api.Controllers
 			return Ok("Note added successfully.");
 		}
 
+		[Authorize(Roles = "Technician")]
 		[HttpPatch("{workOrderId}/status")]
 		public async Task<IActionResult> ChangeStatus(Guid workOrderId,
 			[FromBody] ChangeStatusRequest request)
