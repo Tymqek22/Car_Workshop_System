@@ -40,6 +40,9 @@ namespace Car_Workshop_System.Api.Controllers
 		{
 			var workOrder = await _workOrderService.GetWorkOrderDetails(workOrderId);
 
+			if (workOrder is null)
+				return NotFound();
+
 			return Ok(workOrder);
 		}
 
@@ -49,25 +52,34 @@ namespace Car_Workshop_System.Api.Controllers
 		{
 			var workOrders = await _technicianService.GetAllTechniciansWorkOrders(technicianId);
 
+			if (workOrders is null)
+				return NotFound();
+
 			return Ok(workOrders);
 		}
 
 		[Authorize(Roles = "Owner")]
 		[HttpPost]
-		public async Task<IActionResult> Accept([FromBody] AcceptWorkOrderDto request)
+		public async Task<IActionResult> AcceptWorkOrder([FromBody] AcceptWorkOrderDto request)
 		{
-			await _workOrderService.AcceptWorkOrder(request);
+			var result = await _workOrderService.AcceptWorkOrder(request);
 
-			return Ok("Work order accepted");
+			if (!result.IsSuccess)
+				return NotFound(result.Error);
+
+			return NoContent();
 		}
 
 		[Authorize(Roles = "Owner")]
 		[HttpPut("{workOrderId}/cancellation")]
-		public async Task<IActionResult> Cancel(Guid workOrderId)
+		public async Task<IActionResult> CancelWorkOrder(Guid workOrderId)
 		{
-			await _workOrderService.CancelWorkOrder(workOrderId);
+			var result = await _workOrderService.CancelWorkOrder(workOrderId);
 
-			return Ok("Work order cancelled successfully.");
+			if (!result.IsSuccess)
+				return NotFound(result.Error);
+
+			return NoContent();
 		}
 
 		[Authorize(Roles = "Owner")]
@@ -81,9 +93,12 @@ namespace Car_Workshop_System.Api.Controllers
 				TechnicianId = request.TechnicianId
 			};
 
-			await _workOrderService.AssignTechnician(dto);
+			var result = await _workOrderService.AssignTechnician(dto);
 
-			return Ok("Technician assigned succesfully.");
+			if (!result.IsSuccess)
+				return BadRequest(result.Error);
+
+			return NoContent();
 		}
 
 		[Authorize(Roles = "Technician")]
@@ -100,9 +115,12 @@ namespace Car_Workshop_System.Api.Controllers
 				TechnicianId = userId
 			};
 
-			await _technicianService.AddNote(dto);
+			var result = await _technicianService.AddNote(dto);
 
-			return Ok("Note added successfully.");
+			if (!result.IsSuccess)
+				return BadRequest(result.Error);
+
+			return NoContent();
 		}
 
 		[Authorize(Roles = "Technician")]
@@ -116,9 +134,12 @@ namespace Car_Workshop_System.Api.Controllers
 				Status = request.Status
 			};
 
-			await _technicianService.ChangeStatus(dto);
+			var result = await _technicianService.ChangeStatus(dto);
 
-			return Ok("Status changed successfully.");
+			if (!result.IsSuccess)
+				return BadRequest(result.Error);
+
+			return NoContent();
 		}
 	}
 }
