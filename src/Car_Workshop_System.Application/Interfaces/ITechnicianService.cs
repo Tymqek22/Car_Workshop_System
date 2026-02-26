@@ -1,12 +1,12 @@
-﻿using Car_Workshop_System.Application.DTO;
-using Car_Workshop_System.Domain.Enums;
+﻿using Car_Workshop_System.Application.Common;
+using Car_Workshop_System.Application.DTO;
 
 namespace Car_Workshop_System.Application.Interfaces
 {
 	public interface ITechnicianService
 	{
-		public Task ChangeStatus(ChangeStatusDto request);
-		public Task AddNote(AddNoteDto request);
+		public Task<Result> ChangeStatus(ChangeStatusDto request);
+		public Task<Result> AddNote(AddNoteDto request);
 		public Task<IEnumerable<WorkOrderDto>> GetAllTechniciansWorkOrders(string technicianId);
 	}
 }

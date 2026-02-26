@@ -1,8 +1,10 @@
-﻿using Car_Workshop_System.Application.DTO;
+﻿using Car_Workshop_System.Application.Common;
+using Car_Workshop_System.Application.DTO;
 using Car_Workshop_System.Application.Interfaces;
 using Car_Workshop_System.Application.Mappings;
 using Car_Workshop_System.Domain.Entities;
 using Car_Workshop_System.Domain.Enums;
+using Car_Workshop_System.Domain.Errors;
 
 namespace Car_Workshop_System.Application.Services
 {
@@ -19,15 +21,15 @@ namespace Car_Workshop_System.Application.Services
 			_identityService = identityService;
 		}
 
-		public async Task AddNote(AddNoteDto request)
+		public async Task<Result> AddNote(AddNoteDto request)
 		{
-			var workOrder = await _workOrderRepository.Get(wo => wo.Id == request.WorkOrderId,"Notes");
+			var workOrder = await _workOrderRepository.GetWithDetailsAsync(request.WorkOrderId);
 
 			if (workOrder is null)
-				throw new Exception("Work order doesn't exist.");
+				return Result.Failure(WorkOrderErrors.OrderNotFound);
 
 			if (await _identityService.GetUserById(request.TechnicianId) is null)
-				throw new Exception("Technician doesn't exist.");
+				return Result.Failure(WorkOrderErrors.TechnicianNotFound);
 
 			var note = new Note
 			{
@@ -37,32 +39,33 @@ namespace Car_Workshop_System.Application.Services
 				TechnicianId = request.TechnicianId
 			};
 
-			workOrder.First().Notes.Add(note);
+			workOrder.Notes.Add(note);
 
 			await _workOrderRepository.SaveChangesAsync();
+
+			return Result.Success();
 		}
 
-		public async Task ChangeStatus(ChangeStatusDto request)
+		public async Task<Result> ChangeStatus(ChangeStatusDto request)
 		{
 			var workOrder = await _workOrderRepository.GetByIdAsync(request.WorkOrderId);
 
 			if (workOrder is null)
-				throw new Exception("Work order doesn't exist.");
+				return Result.Failure(WorkOrderErrors.OrderNotFound);
 
 			if (workOrder.Status == Status.Cancelled || ((Status)request.Status - workOrder.Status != 1))
-				throw new Exception("Status cannot be changed. Try to pick different status.");
+				return Result.Failure(WorkOrderErrors.WrongStatusPicked);
 
 			workOrder.Status = (Status)request.Status;
 
 			await _workOrderRepository.SaveChangesAsync();
+
+			return Result.Success();
 		}
 
 		public async Task<IEnumerable<WorkOrderDto>> GetAllTechniciansWorkOrders(string technicianId)
 		{
 			var techniciansOrders = await _workOrderRepository.GetAllTechnicianWorkOrders(technicianId);
-
-			if (techniciansOrders is null)
-				throw new Exception("None work orders found.");
 
 			return techniciansOrders.Select(to => to.MapToDto());
 		}

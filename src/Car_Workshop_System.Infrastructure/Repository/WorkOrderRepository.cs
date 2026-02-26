@@ -17,5 +17,22 @@ namespace Car_Workshop_System.Infrastructure.Repository
 					.Any(ta => ta.TechnicianId == technicianId))
 				.ToListAsync();
 		}
+
+		public async Task<WorkOrder> GetWithDetailsAsync(Guid id)
+		{
+			return await _dbSet
+				.Include(wo => wo.Notes)
+				.Include(wo => wo.TechnicianAssignments)
+				.Where(wo => wo.Id == id)
+				.SingleAsync();
+		}
+
+		public async Task<bool> IsTechnicianAssigned(Guid workOrderId,string technicianId)
+		{
+			return await _dbContext.TechnicianAssignments
+				.AnyAsync(ta => ta.WorkOrderId == workOrderId &&
+								ta.TechnicianId == technicianId);
+				
+		}
 	}
 }

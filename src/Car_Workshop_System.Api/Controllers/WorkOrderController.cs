@@ -62,7 +62,7 @@ namespace Car_Workshop_System.Api.Controllers
 		}
 
 		[Authorize(Roles = "Owner")]
-		[HttpPatch("{workOrderId}/cancellation")]
+		[HttpPut("{workOrderId}/cancellation")]
 		public async Task<IActionResult> Cancel(Guid workOrderId)
 		{
 			await _workOrderService.CancelWorkOrder(workOrderId);
@@ -106,7 +106,7 @@ namespace Car_Workshop_System.Api.Controllers
 		}
 
 		[Authorize(Roles = "Technician")]
-		[HttpPatch("{workOrderId}/status")]
+		[HttpPut("{workOrderId}/status")]
 		public async Task<IActionResult> ChangeStatus(Guid workOrderId,
 			[FromBody] ChangeStatusRequest request)
 		{

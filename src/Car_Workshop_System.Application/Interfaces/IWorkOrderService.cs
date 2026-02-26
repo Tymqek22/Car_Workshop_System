@@ -1,5 +1,5 @@
-﻿using Car_Workshop_System.Application.DTO;
-using Car_Workshop_System.Domain.Entities;
+﻿using Car_Workshop_System.Application.Common;
+using Car_Workshop_System.Application.DTO;
 
 namespace Car_Workshop_System.Application.Interfaces
 {
@@ -7,8 +7,8 @@ namespace Car_Workshop_System.Application.Interfaces
 	{
 		public Task<IEnumerable<WorkOrderDto>> GetAllWorkOrders();
 		public Task<WorkOrderDto> GetWorkOrderDetails(Guid workOrderId);
-		public Task AcceptWorkOrder(AcceptWorkOrderDto request);
-		public Task CancelWorkOrder(Guid workOrderId);
-		public Task AssignTechnician(AssignTechnicianDto request);
+		public Task<Result> AcceptWorkOrder(AcceptWorkOrderDto request);
+		public Task<Result> CancelWorkOrder(Guid workOrderId);
+		public Task<Result> AssignTechnician(AssignTechnicianDto request);
 	}
 }
