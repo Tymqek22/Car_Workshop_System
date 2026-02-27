@@ -8,8 +8,6 @@ using System.Security.Claims;
 
 namespace Car_Workshop_System.Api.Controllers
 {
-	//TODO: refactor later, add authorization, pass dto as endpoint parameters
-
 	[Route("api/workorders")]
 	[ApiController]
 	public class WorkOrderController : ControllerBase

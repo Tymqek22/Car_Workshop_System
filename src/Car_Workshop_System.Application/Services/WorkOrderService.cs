@@ -11,7 +11,7 @@ namespace Car_Workshop_System.Application.Services
 {
 	public class WorkOrderService : IWorkOrderService
 	{
-		//TODO: refactor to use dto as a parameters, rich domain model implementation, result pattern
+		//TODO: rich domain model implementation
 
 		private readonly IWorkOrderRepository _workOrderRepository;
 		private readonly IRepository<TechnicianAssignment> _technicianAssignmentRepository;
@@ -32,6 +32,17 @@ namespace Car_Workshop_System.Application.Services
 
 		public async Task<Result> AcceptWorkOrder(AcceptWorkOrderDto request)
 		{
+			var validator = _validatorResolver.Get<AcceptWorkOrderDto>();
+			var validationResult = await validator.ValidateAsync(request);
+
+			if (!validationResult.IsValid) {
+
+				var errors = validationResult.Errors
+					.Select(x => new Error(x.ErrorCode,x.ErrorMessage));
+
+				return Result.Failure(errors.First());
+			}
+
 			var workOrder = new WorkOrder
 			{
 				Brand = request.Brand,
@@ -60,7 +71,6 @@ namespace Car_Workshop_System.Application.Services
 
 				return Result.Failure(errors.First());
 			}
-
 
 			var workOrder = await _workOrderRepository.GetByIdAsync(request.WorkOrderId);
 

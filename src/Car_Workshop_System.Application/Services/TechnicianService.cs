@@ -12,17 +12,31 @@ namespace Car_Workshop_System.Application.Services
 	{
 		private readonly IWorkOrderRepository _workOrderRepository;
 		private readonly IIdentityService _identityService;
+		private readonly IValidatorResolver _validatorResolver;
 
 		public TechnicianService(
 			IWorkOrderRepository workOrderRepository,
-			IIdentityService identityService)
+			IIdentityService identityService,
+			IValidatorResolver validatorResolver)
 		{
 			_workOrderRepository = workOrderRepository;
 			_identityService = identityService;
+			_validatorResolver = validatorResolver;
 		}
 
 		public async Task<Result> AddNote(AddNoteDto request)
 		{
+			var validator = _validatorResolver.Get<AddNoteDto>();
+			var validationResult = await validator.ValidateAsync(request);
+
+			if (!validationResult.IsValid) {
+
+				var errors = validationResult.Errors
+					.Select(x => new Error(x.ErrorCode,x.ErrorMessage));
+
+				return Result.Failure(errors.First());
+			}
+
 			var workOrder = await _workOrderRepository.GetWithDetailsAsync(request.WorkOrderId);
 
 			if (workOrder is null)
@@ -48,6 +62,17 @@ namespace Car_Workshop_System.Application.Services
 
 		public async Task<Result> ChangeStatus(ChangeStatusDto request)
 		{
+			var validator = _validatorResolver.Get<ChangeStatusDto>();
+			var validationResult = await validator.ValidateAsync(request);
+
+			if (!validationResult.IsValid) {
+
+				var errors = validationResult.Errors
+					.Select(x => new Error(x.ErrorCode,x.ErrorMessage));
+
+				return Result.Failure(errors.First());
+			}
+
 			var workOrder = await _workOrderRepository.GetByIdAsync(request.WorkOrderId);
 
 			if (workOrder is null)
