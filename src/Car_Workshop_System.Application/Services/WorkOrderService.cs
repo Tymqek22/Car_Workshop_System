@@ -5,6 +5,7 @@ using Car_Workshop_System.Application.Mappings;
 using Car_Workshop_System.Domain.Entities;
 using Car_Workshop_System.Domain.Enums;
 using Car_Workshop_System.Domain.Errors;
+using FluentValidation;
 
 namespace Car_Workshop_System.Application.Services
 {
@@ -15,15 +16,18 @@ namespace Car_Workshop_System.Application.Services
 		private readonly IWorkOrderRepository _workOrderRepository;
 		private readonly IRepository<TechnicianAssignment> _technicianAssignmentRepository;
 		private readonly IIdentityService _identityService;
+		private readonly IValidatorResolver _validatorResolver;
 
 		public WorkOrderService(
 			IWorkOrderRepository workOrderRepository,
 			IRepository<TechnicianAssignment> technicianAssignmentRepository,
-			IIdentityService identityService)
+			IIdentityService identityService,
+			IValidatorResolver validatorResolver)
 		{
 			_workOrderRepository = workOrderRepository;
 			_technicianAssignmentRepository = technicianAssignmentRepository;
 			_identityService = identityService;
+			_validatorResolver = validatorResolver;
 		}
 
 		public async Task<Result> AcceptWorkOrder(AcceptWorkOrderDto request)
@@ -46,6 +50,18 @@ namespace Car_Workshop_System.Application.Services
 
 		public async Task<Result> AssignTechnician(AssignTechnicianDto request)
 		{
+			var validator = _validatorResolver.Get<AssignTechnicianDto>();
+			var validationResult = await validator.ValidateAsync(request);
+
+			if (!validationResult.IsValid) {
+
+				var errors = validationResult.Errors
+					.Select(x => new Error(x.ErrorCode,x.ErrorMessage));
+
+				return Result.Failure(errors.First());
+			}
+
+
 			var workOrder = await _workOrderRepository.GetByIdAsync(request.WorkOrderId);
 
 			if (workOrder is null)

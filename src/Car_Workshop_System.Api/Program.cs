@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using FluentValidation;
+using Car_Workshop_System.Application.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -84,6 +86,9 @@ builder.Services.AddScoped<IRepository<TechnicianAssignment>,Repository<Technici
 builder.Services.AddScoped<IRepository<Note>,Repository<Note>>();
 builder.Services.AddScoped<IWorkOrderService,WorkOrderService>();
 builder.Services.AddScoped<ITechnicianService,TechnicianService>();
+builder.Services.AddScoped<IValidatorResolver,ValidatorResolver>();
+
+builder.Services.AddValidatorsFromAssemblyContaining<AssignTechnicianValidator>();
 
 var app = builder.Build();
 
