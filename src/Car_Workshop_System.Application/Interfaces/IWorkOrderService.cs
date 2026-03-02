@@ -10,5 +10,6 @@ namespace Car_Workshop_System.Application.Interfaces
 		public Task<Result> AcceptWorkOrder(AcceptWorkOrderDto request);
 		public Task<Result> CancelWorkOrder(Guid workOrderId);
 		public Task<Result> AssignTechnician(AssignTechnicianDto request);
+		public Task<Result> UpdateWorkOrder(UpdateWorkOrderDto request);
 	}
 }

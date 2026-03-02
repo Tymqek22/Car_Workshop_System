@@ -14,13 +14,13 @@ namespace Car_Workshop_System.Application.Services
 		//TODO: rich domain model implementation
 
 		private readonly IWorkOrderRepository _workOrderRepository;
-		private readonly IRepository<TechnicianAssignment> _technicianAssignmentRepository;
+		private readonly ITechnicianAssignmentRepository _technicianAssignmentRepository;
 		private readonly IIdentityService _identityService;
 		private readonly IValidatorResolver _validatorResolver;
 
 		public WorkOrderService(
 			IWorkOrderRepository workOrderRepository,
-			IRepository<TechnicianAssignment> technicianAssignmentRepository,
+			ITechnicianAssignmentRepository technicianAssignmentRepository,
 			IIdentityService identityService,
 			IValidatorResolver validatorResolver)
 		{
@@ -125,6 +125,25 @@ namespace Car_Workshop_System.Application.Services
 			var workOrder = await _workOrderRepository.GetWithDetailsAsync(workOrderId);
 
 			return workOrder.MapToDto();
+		}
+
+		public async Task<Result> UpdateWorkOrder(UpdateWorkOrderDto request)
+		{
+			var workOrder = await _workOrderRepository.GetWithDetailsAsync(request.Id);
+
+			if (workOrder is null)
+				return Result.Failure(WorkOrderErrors.OrderNotFound);
+
+			workOrder.Brand = request.Brand;
+			workOrder.Model = request.Model;
+			workOrder.Year = request.Year;
+			workOrder.IssueDescription = request.IssueDescription;
+
+			var newTechIds = request.TechnicianIds;
+
+			await _technicianAssignmentRepository.DeleteManyAsync(ta => !newTechIds.Contains(ta.TechnicianId));
+
+			return Result.Success();
 		}
 	}
 }

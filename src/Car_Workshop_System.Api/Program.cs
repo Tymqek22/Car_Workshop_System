@@ -83,6 +83,7 @@ builder.Services.AddScoped<IIdentityService,IdentityService>();
 builder.Services.AddScoped<IRepository<WorkOrder>,Repository<WorkOrder>>();
 builder.Services.AddScoped<IWorkOrderRepository,WorkOrderRepository>();
 builder.Services.AddScoped<IRepository<TechnicianAssignment>,Repository<TechnicianAssignment>>();
+builder.Services.AddScoped<ITechnicianAssignmentRepository, TechnicianAssignmentRepository>();
 builder.Services.AddScoped<IRepository<Note>,Repository<Note>>();
 builder.Services.AddScoped<IWorkOrderService,WorkOrderService>();
 builder.Services.AddScoped<ITechnicianService,TechnicianService>();
