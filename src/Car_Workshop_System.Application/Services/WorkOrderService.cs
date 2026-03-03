@@ -2,6 +2,7 @@
 using Car_Workshop_System.Application.DTO;
 using Car_Workshop_System.Application.Interfaces;
 using Car_Workshop_System.Application.Mappings;
+using Car_Workshop_System.Application.Validators;
 using Car_Workshop_System.Domain.Entities;
 using Car_Workshop_System.Domain.Enums;
 using Car_Workshop_System.Domain.Errors;
@@ -129,6 +130,17 @@ namespace Car_Workshop_System.Application.Services
 
 		public async Task<Result> UpdateWorkOrder(UpdateWorkOrderDto request)
 		{
+			var validator = _validatorResolver.Get<UpdateWorkOrderDto>();
+			var validationResult = await validator.ValidateAsync(request);
+
+			if (!validationResult.IsValid) {
+
+				var errors = validationResult.Errors
+					.Select(e => new Error(e.ErrorCode,e.ErrorMessage));
+
+				return Result.Failure(errors.First());
+			}
+
 			var workOrder = await _workOrderRepository.GetWithDetailsAsync(request.Id);
 
 			if (workOrder is null)
