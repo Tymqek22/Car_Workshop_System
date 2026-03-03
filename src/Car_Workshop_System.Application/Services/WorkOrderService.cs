@@ -141,7 +141,33 @@ namespace Car_Workshop_System.Application.Services
 
 			var newTechIds = request.TechnicianIds;
 
-			await _technicianAssignmentRepository.DeleteManyAsync(ta => !newTechIds.Contains(ta.TechnicianId));
+			var currentTechIds = workOrder.TechnicianAssignments
+				.Select(ta => ta.TechnicianId)
+				.ToList();
+
+			var techsToRemove = workOrder.TechnicianAssignments
+				.Where(ta => !newTechIds.Contains(ta.TechnicianId))
+				.ToList();
+
+			foreach (var t in techsToRemove) {
+
+				workOrder.TechnicianAssignments.Remove(t);
+			}
+
+			var techsToAdd = newTechIds
+				.Where(t => !currentTechIds.Contains(t))
+				.ToList();
+
+			foreach (var t in techsToAdd) {
+
+				workOrder.TechnicianAssignments.Add(new TechnicianAssignment
+				{
+					WorkOrderId = workOrder.Id,
+					TechnicianId = t
+				});
+			}
+
+			await _workOrderRepository.SaveChangesAsync();
 
 			return Result.Success();
 		}

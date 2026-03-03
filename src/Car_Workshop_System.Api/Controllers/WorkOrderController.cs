@@ -57,30 +57,6 @@ namespace Car_Workshop_System.Api.Controllers
 		}
 
 		[Authorize(Roles = "Owner")]
-		[HttpPost]
-		public async Task<IActionResult> AcceptWorkOrder([FromBody] AcceptWorkOrderDto request)
-		{
-			var result = await _workOrderService.AcceptWorkOrder(request);
-
-			if (!result.IsSuccess)
-				return NotFound(result.Error);
-
-			return NoContent();
-		}
-
-		[Authorize(Roles = "Owner")]
-		[HttpPut("{workOrderId}/cancellation")]
-		public async Task<IActionResult> CancelWorkOrder(Guid workOrderId)
-		{
-			var result = await _workOrderService.CancelWorkOrder(workOrderId);
-
-			if (!result.IsSuccess)
-				return NotFound(result.Error);
-
-			return NoContent();
-		}
-
-		[Authorize(Roles = "Owner")]
 		[HttpPost("{workOrderId}/technicians")]
 		public async Task<IActionResult> AssignTechnician(Guid workOrderId,
 			[FromBody] AssignTechnicianRequest request)
@@ -114,6 +90,53 @@ namespace Car_Workshop_System.Api.Controllers
 			};
 
 			var result = await _technicianService.AddNote(dto);
+
+			if (!result.IsSuccess)
+				return BadRequest(result.Error);
+
+			return NoContent();
+		}
+
+		[Authorize(Roles = "Owner")]
+		[HttpPost]
+		public async Task<IActionResult> AcceptWorkOrder([FromBody] AcceptWorkOrderDto request)
+		{
+			var result = await _workOrderService.AcceptWorkOrder(request);
+
+			if (!result.IsSuccess)
+				return NotFound(result.Error);
+
+			return NoContent();
+		}
+
+		[Authorize(Roles = "Owner")]
+		[HttpPut("{workOrderId}/cancellation")]
+		public async Task<IActionResult> CancelWorkOrder(Guid workOrderId)
+		{
+			var result = await _workOrderService.CancelWorkOrder(workOrderId);
+
+			if (!result.IsSuccess)
+				return NotFound(result.Error);
+
+			return NoContent();
+		}
+
+		[Authorize(Roles = "Owner")]
+		[HttpPut("{workOrderId}")]
+		public async Task<IActionResult> UpdateWorkOrder(Guid workOrderId,
+			[FromBody] UpdateWorkOrderRequest request)
+		{
+			var dto = new UpdateWorkOrderDto
+			{
+				Id = workOrderId,
+				Brand = request.Brand,
+				Model = request.Model,
+				Year = request.Year,
+				IssueDescription = request.IssueDescription,
+				TechnicianIds = request.TechnicianIds
+			};
+
+			var result = await _workOrderService.UpdateWorkOrder(dto);
 
 			if (!result.IsSuccess)
 				return BadRequest(result.Error);
