@@ -2,7 +2,6 @@
 using Car_Workshop_System.Application.DTO;
 using Car_Workshop_System.Application.Interfaces;
 using Car_Workshop_System.Application.Mappings;
-using Car_Workshop_System.Application.Validators;
 using Car_Workshop_System.Domain.Entities;
 using Car_Workshop_System.Domain.Enums;
 using Car_Workshop_System.Domain.Errors;
@@ -39,9 +38,10 @@ namespace Car_Workshop_System.Application.Services
 			if (!validationResult.IsValid) {
 
 				var errors = validationResult.Errors
-					.Select(x => new Error(x.ErrorCode,x.ErrorMessage));
+					.Select(x => new Error(x.ErrorCode,x.ErrorMessage))
+					.ToList();
 
-				return Result.Failure(errors.First());
+				return Result.Failure(errors);
 			}
 
 			var workOrder = new WorkOrder
@@ -68,18 +68,19 @@ namespace Car_Workshop_System.Application.Services
 			if (!validationResult.IsValid) {
 
 				var errors = validationResult.Errors
-					.Select(x => new Error(x.ErrorCode,x.ErrorMessage));
+					.Select(x => new Error(x.ErrorCode,x.ErrorMessage))
+					.ToList();
 
-				return Result.Failure(errors.First());
+				return Result.Failure(errors);
 			}
 
 			var workOrder = await _workOrderRepository.GetByIdAsync(request.WorkOrderId);
 
 			if (workOrder is null)
-				return Result.Failure(WorkOrderErrors.OrderNotFound);
+				return Result.Failure(new List<Error> { WorkOrderErrors.OrderNotFound });
 
 			if (await _identityService.GetUserById(request.TechnicianId) is null)
-				return Result.Failure(WorkOrderErrors.TechnicianNotFound);
+				return Result.Failure(new List<Error> { WorkOrderErrors.TechnicianNotFound });
 
 			var technicianAssignment = new TechnicianAssignment
 			{
@@ -88,7 +89,7 @@ namespace Car_Workshop_System.Application.Services
 			};
 
 			if (await _workOrderRepository.IsTechnicianAssigned(workOrder.Id,request.TechnicianId))
-				return Result.Failure(WorkOrderErrors.TechnicianAlreadyAssigned);
+				return Result.Failure(new List<Error> { WorkOrderErrors.TechnicianAlreadyAssigned });
 
 			await _technicianAssignmentRepository.AddAsync(technicianAssignment);
 			await _technicianAssignmentRepository.SaveChangesAsync();
@@ -101,10 +102,10 @@ namespace Car_Workshop_System.Application.Services
 			var workOrder = await _workOrderRepository.GetByIdAsync(workOrderId);
 
 			if (workOrder is null)
-				return Result.Failure(WorkOrderErrors.OrderNotFound);
+				return Result.Failure(new List<Error> { WorkOrderErrors.OrderNotFound });
 
 			if (workOrder.Status == Status.Cancelled)
-				return Result.Failure(WorkOrderErrors.AlreadyCancelled);
+				return Result.Failure(new List<Error> { WorkOrderErrors.AlreadyCancelled });
 
 			workOrder.Status = Status.Cancelled;
 
@@ -136,15 +137,16 @@ namespace Car_Workshop_System.Application.Services
 			if (!validationResult.IsValid) {
 
 				var errors = validationResult.Errors
-					.Select(e => new Error(e.ErrorCode,e.ErrorMessage));
+					.Select(e => new Error(e.ErrorCode,e.ErrorMessage))
+					.ToList();
 
-				return Result.Failure(errors.First());
+				return Result.Failure(errors);
 			}
 
 			var workOrder = await _workOrderRepository.GetWithDetailsAsync(request.Id);
 
 			if (workOrder is null)
-				return Result.Failure(WorkOrderErrors.OrderNotFound);
+				return Result.Failure(new List<Error> { WorkOrderErrors.OrderNotFound });
 
 			workOrder.Brand = request.Brand;
 			workOrder.Model = request.Model;

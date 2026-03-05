@@ -18,32 +18,32 @@ namespace Car_Workshop_System.Infrastructure.Auth.Services
 			_jwtService = jwtService;
 		}
 
-		public async Task<string> GetUserById(string id)
+		public async Task<Result<string>> GetUserById(string id)
 		{
 			var user = await _userManager.FindByIdAsync(id);
 
 			if (user is null)
-				return null;
+				return Result<string>.Failure(new List<Error> { AuthErrors.UserNotFound });
 
-			return user.Id;
+			return Result<string>.Success(user.Id);
 		}
 
-		public async Task<string> Login(LoginDto loginDto)
+		public async Task<Result<string>> Login(LoginDto loginDto)
 		{
 			var user = await _userManager.FindByNameAsync(loginDto.Login);
 
 			if (user is null)
-				return string.Empty;/*Result.Failure(new Error("AuthErrors.UserNotFound", "User not found."));*/
+				return Result<string>.Failure(new List<Error> { AuthErrors.UserNotFound });
 
 			var valid = await _userManager.CheckPasswordAsync(user,loginDto.Password);
 
 			if (!valid)
-				return string.Empty;
+				return Result<string>.Failure(new List<Error> { AuthErrors.WrongPassword });
 
 			var roles = await _userManager.GetRolesAsync(user);
 			var token = _jwtService.GenerateToken(user,roles);
 
-			return token;
+			return Result<string>.Success(token);
 		}
 
 		public async Task<Result> Register(RegisterDto registerDto)
@@ -58,12 +58,12 @@ namespace Car_Workshop_System.Infrastructure.Auth.Services
 			var userCreated = await _userManager.CreateAsync(newUser,registerDto.Password);
 
 			if (!userCreated.Succeeded)
-				return Result.Failure(new Error("AuthErrors.UserNotCreated","User cannot be created."));
+				return Result.Failure(new List<Error> { AuthErrors.UserNotCreated });
 
 			var roleSigned = await _userManager.AddToRoleAsync(newUser,"Technician");
 
 			if (!roleSigned.Succeeded)
-				return Result.Failure(new Error("AuthErrors.RoleAssignmentError","User cannot be assigned to this role."));
+				return Result.Failure(new List<Error> { AuthErrors.RoleAssignmentError });
 
 			return Result.Success();
 		}

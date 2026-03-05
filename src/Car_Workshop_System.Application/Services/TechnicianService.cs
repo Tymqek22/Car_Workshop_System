@@ -32,18 +32,19 @@ namespace Car_Workshop_System.Application.Services
 			if (!validationResult.IsValid) {
 
 				var errors = validationResult.Errors
-					.Select(x => new Error(x.ErrorCode,x.ErrorMessage));
+					.Select(x => new Error(x.ErrorCode,x.ErrorMessage))
+					.ToList();
 
-				return Result.Failure(errors.First());
+				return Result.Failure(errors);
 			}
 
 			var workOrder = await _workOrderRepository.GetWithDetailsAsync(request.WorkOrderId);
 
 			if (workOrder is null)
-				return Result.Failure(WorkOrderErrors.OrderNotFound);
+				return Result.Failure(new List<Error> { WorkOrderErrors.OrderNotFound });
 
 			if (await _identityService.GetUserById(request.TechnicianId) is null)
-				return Result.Failure(WorkOrderErrors.TechnicianNotFound);
+				return Result.Failure(new List<Error> { WorkOrderErrors.TechnicianNotFound });
 
 			var note = new Note
 			{
@@ -68,18 +69,19 @@ namespace Car_Workshop_System.Application.Services
 			if (!validationResult.IsValid) {
 
 				var errors = validationResult.Errors
-					.Select(x => new Error(x.ErrorCode,x.ErrorMessage));
+					.Select(x => new Error(x.ErrorCode,x.ErrorMessage))
+					.ToList();
 
-				return Result.Failure(errors.First());
+				return Result.Failure(errors);
 			}
 
 			var workOrder = await _workOrderRepository.GetByIdAsync(request.WorkOrderId);
 
 			if (workOrder is null)
-				return Result.Failure(WorkOrderErrors.OrderNotFound);
+				return Result.Failure(new List<Error> { WorkOrderErrors.OrderNotFound });
 
 			if (workOrder.Status == Status.Cancelled || ((Status)request.Status - workOrder.Status != 1))
-				return Result.Failure(WorkOrderErrors.WrongStatusPicked);
+				return Result.Failure(new List<Error> { WorkOrderErrors.WrongStatusPicked });
 
 			workOrder.Status = (Status)request.Status;
 

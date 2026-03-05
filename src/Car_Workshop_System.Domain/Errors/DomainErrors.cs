@@ -19,4 +19,19 @@
 		public static readonly Error WrongStatusPicked =
 			new("WorkOrderErrors.WrongStatusPicked","Status cannot be changed. Try to pick different status.");
 	}
+
+	public static class AuthErrors
+	{
+		public static readonly Error UserNotFound =
+			new("AuthErrors.UserNotFound","User doesn't exist.");
+
+		public static readonly Error UserNotCreated =
+			new("AuthErrors.UserNotCreated","User cannot be created.");
+
+		public static readonly Error RoleAssignmentError =
+			new("AuthErrors.RoleAssignmentError","User cannot be assigned to this role.");\
+
+		public static readonly Error WrongPassword =
+			new("AuthErrors.WrongPassword","Wrong password was typed.");
+	}
 }

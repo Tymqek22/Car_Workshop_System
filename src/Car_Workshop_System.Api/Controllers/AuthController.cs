@@ -1,9 +1,5 @@
 ﻿using Car_Workshop_System.Application.DTO;
 using Car_Workshop_System.Application.Interfaces;
-using Car_Workshop_System.Infrastructure.Auth.Identity.Models;
-using Car_Workshop_System.Infrastructure.Auth.Services;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Car_Workshop_System.Api.Controllers
@@ -12,7 +8,6 @@ namespace Car_Workshop_System.Api.Controllers
 	[ApiController]
 	public class AuthController : ControllerBase
 	{
-		//to refactor leater
 		private readonly IIdentityService _identityService;
 
 		public AuthController(IIdentityService identityService)
