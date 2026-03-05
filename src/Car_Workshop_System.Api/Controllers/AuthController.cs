@@ -1,4 +1,6 @@
-﻿using Car_Workshop_System.Infrastructure.Auth.Identity.Models;
+﻿using Car_Workshop_System.Application.DTO;
+using Car_Workshop_System.Application.Interfaces;
+using Car_Workshop_System.Infrastructure.Auth.Identity.Models;
 using Car_Workshop_System.Infrastructure.Auth.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -11,56 +13,33 @@ namespace Car_Workshop_System.Api.Controllers
 	public class AuthController : ControllerBase
 	{
 		//to refactor leater
-		private readonly UserManager<ApplicationUser> _userManager;
-		private readonly JwtService _jwtService;
+		private readonly IIdentityService _identityService;
 
-		public AuthController(UserManager<ApplicationUser> userManager, JwtService jwtService)
+		public AuthController(IIdentityService identityService)
 		{
-			_userManager = userManager;
-			_jwtService = jwtService;
+			_identityService = identityService;
 		}
 
 		[HttpPost("register")]
-		public async Task<IActionResult> Register(string firstName, string lastName, string login, string password)
+		public async Task<IActionResult> Register(RegisterDto request)
 		{
-			var newUser = new ApplicationUser
-			{
-				FirstName = firstName,
-				LastName = lastName,
-				UserName = login,
-				Email = login
-			};
+			var result = await _identityService.Register(request);
 
-			var userCreated = await _userManager.CreateAsync(newUser,password);
-
-			if (!userCreated.Succeeded)
+			if (!result.IsSuccess)
 				return BadRequest();
 
-			var roleSigned = await _userManager.AddToRoleAsync(newUser,"Technician");
-
-			if (!roleSigned.Succeeded)
-				return BadRequest();
-
-			return Ok(newUser);
+			return Ok();
 		}
 
 		[HttpPost("login")]
-		public async Task<IActionResult> Login(string login, string password)
+		public async Task<IActionResult> Login(LoginDto request)
 		{
-			var user = await _userManager.FindByNameAsync(login);
+			var result = await _identityService.Login(request);
 
-			if (user is null)
+			if (result == string.Empty)
 				return Unauthorized();
 
-			var valid = await _userManager.CheckPasswordAsync(user,password);
-
-			if (!valid)
-				return Unauthorized();
-
-			var roles = await _userManager.GetRolesAsync(user);
-			var token = _jwtService.GenerateToken(user,roles);
-
-			return Ok(new { token });
+			return Ok(result);
 		}
 	}
 }
