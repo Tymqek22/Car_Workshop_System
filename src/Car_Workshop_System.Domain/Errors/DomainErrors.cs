@@ -29,7 +29,7 @@
 			new("AuthErrors.UserNotCreated","User cannot be created.");
 
 		public static readonly Error RoleAssignmentError =
-			new("AuthErrors.RoleAssignmentError","User cannot be assigned to this role.");\
+			new("AuthErrors.RoleAssignmentError","User cannot be assigned to this role.");
 
 		public static readonly Error WrongPassword =
 			new("AuthErrors.WrongPassword","Wrong password was typed.");

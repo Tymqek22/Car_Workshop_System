@@ -70,7 +70,7 @@ namespace Car_Workshop_System.Api.Controllers
 			var result = await _workOrderService.AssignTechnician(dto);
 
 			if (!result.IsSuccess)
-				return BadRequest(result.Error);
+				return BadRequest(result.Errors);
 
 			return NoContent();
 		}
@@ -92,7 +92,7 @@ namespace Car_Workshop_System.Api.Controllers
 			var result = await _technicianService.AddNote(dto);
 
 			if (!result.IsSuccess)
-				return BadRequest(result.Error);
+				return BadRequest(result.Errors);
 
 			return NoContent();
 		}
@@ -104,7 +104,7 @@ namespace Car_Workshop_System.Api.Controllers
 			var result = await _workOrderService.AcceptWorkOrder(request);
 
 			if (!result.IsSuccess)
-				return NotFound(result.Error);
+				return NotFound(result.Errors);
 
 			return NoContent();
 		}
@@ -116,7 +116,7 @@ namespace Car_Workshop_System.Api.Controllers
 			var result = await _workOrderService.CancelWorkOrder(workOrderId);
 
 			if (!result.IsSuccess)
-				return NotFound(result.Error);
+				return NotFound(result.Errors);
 
 			return NoContent();
 		}
@@ -139,7 +139,7 @@ namespace Car_Workshop_System.Api.Controllers
 			var result = await _workOrderService.UpdateWorkOrder(dto);
 
 			if (!result.IsSuccess)
-				return BadRequest(result.Error);
+				return BadRequest(result.Errors);
 
 			return NoContent();
 		}
@@ -158,7 +158,7 @@ namespace Car_Workshop_System.Api.Controllers
 			var result = await _technicianService.ChangeStatus(dto);
 
 			if (!result.IsSuccess)
-				return BadRequest(result.Error);
+				return BadRequest(result.Errors);
 
 			return NoContent();
 		}

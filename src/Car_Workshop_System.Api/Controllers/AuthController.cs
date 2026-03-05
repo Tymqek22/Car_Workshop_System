@@ -21,7 +21,7 @@ namespace Car_Workshop_System.Api.Controllers
 			var result = await _identityService.Register(request);
 
 			if (!result.IsSuccess)
-				return BadRequest();
+				return BadRequest(result.Errors);
 
 			return Ok();
 		}
@@ -31,10 +31,10 @@ namespace Car_Workshop_System.Api.Controllers
 		{
 			var result = await _identityService.Login(request);
 
-			if (result == string.Empty)
-				return Unauthorized();
+			if (!result.IsSuccess)
+				return Unauthorized(result.Errors);
 
-			return Ok(result);
+			return Ok(result.Value);
 		}
 	}
 }

@@ -52,13 +52,20 @@ namespace Car_Workshop_System.Infrastructure.Auth.Services
 			{
 				FirstName = registerDto.FirstName,
 				LastName = registerDto.LastName,
+				UserName = registerDto.FirstName,
 				Email = registerDto.Email
 			};
 
 			var userCreated = await _userManager.CreateAsync(newUser,registerDto.Password);
 
-			if (!userCreated.Succeeded)
-				return Result.Failure(new List<Error> { AuthErrors.UserNotCreated });
+			if (!userCreated.Succeeded) {
+
+				var errors = userCreated.Errors
+					.Select(x => new Error(x.Code,x.Description))
+					.ToList();
+
+				return Result.Failure(errors);
+			}
 
 			var roleSigned = await _userManager.AddToRoleAsync(newUser,"Technician");
 
