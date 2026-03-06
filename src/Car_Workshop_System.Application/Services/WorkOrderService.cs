@@ -13,18 +13,15 @@ namespace Car_Workshop_System.Application.Services
 	{
 
 		private readonly IWorkOrderRepository _workOrderRepository;
-		private readonly ITechnicianAssignmentRepository _technicianAssignmentRepository;
 		private readonly IIdentityService _identityService;
 		private readonly IValidatorResolver _validatorResolver;
 
 		public WorkOrderService(
 			IWorkOrderRepository workOrderRepository,
-			ITechnicianAssignmentRepository technicianAssignmentRepository,
 			IIdentityService identityService,
 			IValidatorResolver validatorResolver)
 		{
 			_workOrderRepository = workOrderRepository;
-			_technicianAssignmentRepository = technicianAssignmentRepository;
 			_identityService = identityService;
 			_validatorResolver = validatorResolver;
 		}
@@ -73,7 +70,7 @@ namespace Car_Workshop_System.Application.Services
 				return Result.Failure(errors);
 			}
 
-			var workOrder = await _workOrderRepository.GetByIdAsync(request.WorkOrderId);
+			var workOrder = await _workOrderRepository.GetWithDetailsAsync(request.WorkOrderId);
 
 			if (workOrder is null)
 				return Result.Failure(new List<Error> { WorkOrderErrors.OrderNotFound });
@@ -90,8 +87,9 @@ namespace Car_Workshop_System.Application.Services
 			if (await _workOrderRepository.IsTechnicianAssigned(workOrder.Id,request.TechnicianId))
 				return Result.Failure(new List<Error> { WorkOrderErrors.TechnicianAlreadyAssigned });
 
-			await _technicianAssignmentRepository.AddAsync(technicianAssignment);
-			await _technicianAssignmentRepository.SaveChangesAsync();
+			workOrder.TechnicianAssignments.Add(technicianAssignment);
+
+			await _workOrderRepository.SaveChangesAsync();
 
 			return Result.Success();
 		}

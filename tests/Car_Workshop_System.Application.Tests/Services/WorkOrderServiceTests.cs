@@ -15,13 +15,11 @@ namespace Car_Workshop_System.Application.Tests.Services
 		public async Task AcceptWorkOrder_ShouldSaveOrder_WhenDataIsValid()
 		{
 			var workOrderRepoMock = new Mock<IWorkOrderRepository>();
-			var technicianAssignmentRepoMock = new Mock<ITechnicianAssignmentRepository>();
 			var identityServiceMock = new Mock<IIdentityService>();
-			var valdatorResolverMock = new Mock<IValidatorResolver>();
-
+			var validatorResolverMock = new Mock<IValidatorResolver>();
 			var validatorMock = new Mock<IValidator<AcceptWorkOrderDto>>();
 
-			valdatorResolverMock
+			validatorResolverMock
 				.Setup(x => x.Get<AcceptWorkOrderDto>())
 				.Returns(validatorMock.Object);
 
@@ -31,9 +29,8 @@ namespace Car_Workshop_System.Application.Tests.Services
 
 			var service = new WorkOrderService(
 				workOrderRepoMock.Object,
-				technicianAssignmentRepoMock.Object,
 				identityServiceMock.Object,
-				valdatorResolverMock.Object);
+				validatorResolverMock.Object);
 
 			var dto = new AcceptWorkOrderDto
 			{
@@ -55,10 +52,8 @@ namespace Car_Workshop_System.Application.Tests.Services
 		public async Task AcceptWorkOrder_ShouldReturnFailure_WhenValidationFails()
 		{
 			var workOrderRepoMock = new Mock<IWorkOrderRepository>();
-			var technicianAssignmentRepoMock = new Mock<ITechnicianAssignmentRepository>();
 			var identityServiceMock = new Mock<IIdentityService>();
-			var valdatorResolverMock = new Mock<IValidatorResolver>();
-
+			var validatorResolverMock = new Mock<IValidatorResolver>();
 			var validatorMock = new Mock<IValidator<AcceptWorkOrderDto>>();
 
 			var validationResult = new ValidationResult(new[]
@@ -66,7 +61,7 @@ namespace Car_Workshop_System.Application.Tests.Services
 				new ValidationFailure("Brand", "Brand is required.")
 			});
 
-			valdatorResolverMock
+			validatorResolverMock
 				.Setup(x => x.Get<AcceptWorkOrderDto>())
 				.Returns(validatorMock.Object);
 
@@ -76,9 +71,8 @@ namespace Car_Workshop_System.Application.Tests.Services
 
 			var service = new WorkOrderService(
 				workOrderRepoMock.Object,
-				technicianAssignmentRepoMock.Object,
 				identityServiceMock.Object,
-				valdatorResolverMock.Object);
+				validatorResolverMock.Object);
 
 			var dto = new AcceptWorkOrderDto();
 
