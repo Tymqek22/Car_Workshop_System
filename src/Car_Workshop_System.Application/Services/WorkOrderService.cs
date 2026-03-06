@@ -11,7 +11,6 @@ namespace Car_Workshop_System.Application.Services
 {
 	public class WorkOrderService : IWorkOrderService
 	{
-		//TODO: rich domain model implementation
 
 		private readonly IWorkOrderRepository _workOrderRepository;
 		private readonly ITechnicianAssignmentRepository _technicianAssignmentRepository;

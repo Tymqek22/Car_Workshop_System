@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36930.0 d17.14
+VisualStudioVersion = 17.14.36930.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
@@ -12,6 +12,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Car_Workshop_System.Application", "src\Car_Workshop_System.Application\Car_Workshop_System.Application.csproj", "{29BACA23-4A3E-4654-883E-ED46670F0C04}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Car_Workshop_System.Domain", "src\Car_Workshop_System.Domain\Car_Workshop_System.Domain.csproj", "{24EC6C56-AADA-4D2A-A76D-B98FC3688BBC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{4C59CA72-D2E9-4BB4-B1BE-07AC5780D349}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Car_Workshop_System.Application.Tests", "tests\Car_Workshop_System.Application.Tests\Car_Workshop_System.Application.Tests.csproj", "{0EBCAA6E-9686-4B4C-97E6-E0610FA9C6F7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +39,10 @@ Global
 		{24EC6C56-AADA-4D2A-A76D-B98FC3688BBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24EC6C56-AADA-4D2A-A76D-B98FC3688BBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{24EC6C56-AADA-4D2A-A76D-B98FC3688BBC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0EBCAA6E-9686-4B4C-97E6-E0610FA9C6F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0EBCAA6E-9686-4B4C-97E6-E0610FA9C6F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0EBCAA6E-9686-4B4C-97E6-E0610FA9C6F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0EBCAA6E-9686-4B4C-97E6-E0610FA9C6F7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -44,6 +52,7 @@ Global
 		{589E301F-E05D-4DAA-BA10-5E790FB5E88B} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{29BACA23-4A3E-4654-883E-ED46670F0C04} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{24EC6C56-AADA-4D2A-A76D-B98FC3688BBC} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{0EBCAA6E-9686-4B4C-97E6-E0610FA9C6F7} = {4C59CA72-D2E9-4BB4-B1BE-07AC5780D349}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7C63872A-B74A-4243-BC29-C5ECB559F3E0}
